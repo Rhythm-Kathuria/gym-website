@@ -1,0 +1,84 @@
+<html>
+  <button id="rzp-button1" class="btn btn-outline-dark btn-lg"><i class="fas fa-money-bill"></i>Pay Now</button>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    var options = {
+      "key": "rzp_test_R9GlSL28upmC8L", // Enter the Key ID generated from the Dashboard
+      "amount": "100",
+      "currency": "INR",
+      "description": "Your fitness journey starts now. Let's crush those goals together!",
+      "image": "", // Replace with your UPI QR code image URL
+      "prefill": {
+        "email": "mygymfitness.contact@gmail.com",
+        "contact": "+917888485269", // Make sure to include the + sign before the contact number
+      },
+      "config": {
+        "display": {
+          "blocks": {
+            "utib": { // Name for Axis block
+              "name": "Pay using Axis Bank",
+              "instruments": [
+                {
+                  "method": "card",
+                  "issuers": ["UTIB"]
+                },
+                {
+                  "method": "netbanking",
+                  "banks": ["UTIB"]
+                },
+              ]
+            },
+            "other": { // Name for other block
+              "name": "Other Payment modes",
+              "instruments": [
+                {
+                  "method": "card",
+                  // "issuers": ["ICIC"]
+                },
+                {
+                  "method": "netbanking",
+                }
+              ]
+            },
+            "upi": { // Name for UPI block (Main method)
+              "name": "Pay using UPI",
+              "instruments": [
+                {
+                  "method": "upi"
+                }
+              ]
+            }
+          },
+          "sequence": ["block.upi", "block.utib", "block.other"], // Set UPI as the main method
+          "preferences": {
+            "show_default_blocks": false // Should Checkout show its default blocks?
+          }
+        }
+      },
+      "handler": function (response) {
+        // Verify the payment status and perform necessary actions
+        if (response.razorpay_payment_id) {
+          alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+          // You can update your database or perform other actions here
+        } else {
+          alert("Payment Failed or Cancelled!");
+          console.log("Payment Failed or Cancelled!");
+        }
+      },
+      "modal": {
+        "ondismiss": function () {
+          if (confirm("Are you sure you want to close the form?")) {
+            console.log("Checkout form closed by the user");
+          } else {
+            console.log("Complete the Payment");
+          }
+        }
+      }
+    };
+    var rzp1 = new Razorpay(options);
+    document.getElementById('rzp-button1').onclick = function (e) {
+      rzp1.open();
+      e.preventDefault();
+    }
+  </script>
+</html>
